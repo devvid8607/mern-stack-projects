@@ -5,7 +5,9 @@ import authRoutes from "./routes/auth.js";
 import hotelRoutes from "./routes/hotels.js";
 import roomRoutes from "./routes/rooms.js";
 import userRoutes from "./routes/users.js";
+import cookieParser from "cookie-parser";
 dotenv.config();
+
 const app = express();
 
 const connect = async () => {
@@ -27,12 +29,26 @@ mongoose.connection.on("connected", () => {
 });
 
 //middleware
+app.use(cookieParser());
+app.use(express.json());
+
 app.use("/api/auth", authRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/users", userRoutes);
 
-app.listen(8800, () => {
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong!";
+  return res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
+  });
+});
+
+app.listen(8801, () => {
   connect();
   console.log("Connected to backend");
 });

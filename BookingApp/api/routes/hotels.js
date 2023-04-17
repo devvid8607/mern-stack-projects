@@ -1,14 +1,33 @@
 import express from "express";
+import {
+  countByCity,
+  countByType,
+  createHotel,
+  deleteHotel,
+  getHotel,
+  getHotels,
+  updateHotel,
+} from "../controllers/hotelController.js";
+import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 
 const router = express();
 
 //CREATE
-// router.post("/"(req,res)=>{
+router.post("/", verifyAdmin, createHotel);
 
-// })
-//DELETE
 //UPDATE
-//GET ALL
+router.put("/:id", verifyAdmin, updateHotel);
+
+//DELETE
+router.delete("/:id", verifyAdmin, deleteHotel);
+
 //GET ONE
+router.get("/find/:id", getHotel);
+
+//GET ALL
+router.get("/", getHotels);
+
+router.get("/countByCity", countByCity);
+router.get("/countByType", countByType);
 
 export default router;
